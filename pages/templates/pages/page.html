@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+
+    <h1>{{ title }}</h1>
+
+    <p>{{ text }}</p>
+
+    {% if links %}
+        <h2>Сторінки сайту:</h2>
+
+        <ul>
+            {% for link in links %}
+                <li>
+                    <a href="{% url link.url_name %}">
+                        {{ link.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if show_home_link %}
+        <a href="{% url 'home' %}">Повернутися на головну</a>
+    {% endif %}
+
+</body>
+</html>
