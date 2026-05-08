@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="{% url 'home' %}" class="logo">YT Downloader</a>
+
+        <nav class="main-nav">
+            <a href="{% url 'home' %}">Home</a>
+
+            <div class="nav-dropdown">
+                <span>Categories</span>
+
+                <div class="dropdown-menu">
+                    {% for category in nav_categories %}
+                        <a href="{% url 'category_detail' category.id %}">
+                            {{ category.name }}
+                        </a>
+                    {% empty %}
+                        <span class="dropdown-empty">No categories yet</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contacts' %}">Contacts</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-inner">
+        <div>
+            <h3>YT Downloader</h3>
+            <p>A Django project for downloading video by copied YouTube link.</p>
+        </div>
+
+        <div>
+            <h4>Navigation</h4>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contacts' %}">Contacts</a>
+        </div>
+
+        <div>
+            <h4>Formats</h4>
+            <p>MP4, MP3, HD, Audio only</p>
+        </div>
+    </div>
+
+    <p class="footer-copy">© 2026 YT Downloader. Educational Django project.</p>
+</footer>
+
+</body>
+</html>

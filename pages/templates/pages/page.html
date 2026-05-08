@@ -1,32 +1,14 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
+{% extends 'pages/base.html' %}
 
-    <h1>{{ title }}</h1>
+{% block content %}
 
-    <p>{{ text }}</p>
+<section class="container section">
+    <a href="{% url 'home' %}" class="back-link">← Back to home</a>
 
-    {% if links %}
-        <h2>Сторінки сайту:</h2>
+    <div class="simple-page">
+        <h1>{{ title }}</h1>
+        <p>{{ text }}</p>
+    </div>
+</section>
 
-        <ul>
-            {% for link in links %}
-                <li>
-                    <a href="{% url link.url_name %}">
-                        {{ link.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% if show_home_link %}
-        <a href="{% url 'home' %}">Повернутися на головну</a>
-    {% endif %}
-
-</body>
-</html>
+{% endblock %}

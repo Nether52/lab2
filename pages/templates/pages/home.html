@@ -1,0 +1,97 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<section class="hero-section">
+    <div class="container hero-content">
+        <div>
+            <p class="hero-label">Django video tool</p>
+            <h1>{{ hero_title }}</h1>
+            <p>{{ hero_text }}</p>
+
+            <form class="download-form">
+                <input type="url" placeholder="Paste YouTube link here">
+                <button type="button">Prepare download</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="container section">
+    <div class="section-heading">
+        <h2>Video categories</h2>
+        <p>Categories are loaded from the database.</p>
+    </div>
+
+    <div class="cards-grid">
+        {% for category in categories %}
+            <a href="{% url 'category_detail' category.id %}" class="category-card">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description }}</p>
+            </a>
+        {% empty %}
+            <p>No categories in database yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container section section-dark">
+    <div class="section-heading">
+        <h2>Available formats</h2>
+        <p>Formats are also loaded from the database.</p>
+    </div>
+
+    <div class="formats-grid">
+        {% for format in formats %}
+            <div class="format-card">
+                <h3>{{ format.name }}</h3>
+                <p>Extension: {{ format.extension }}</p>
+                <p>Quality: {{ format.quality }}</p>
+
+                {% if format.only_audio %}
+                    <span class="badge">Audio only</span>
+                {% else %}
+                    <span class="badge">Video</span>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No formats in database yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container section">
+    <div class="section-heading">
+        <h2>Recent download requests</h2>
+        <p>These items come from the DownloadRequest table.</p>
+    </div>
+
+    <div class="requests-list">
+        {% for request_item in download_requests %}
+            <div class="request-card">
+                <h3>{{ request_item.title }}</h3>
+                <p>
+                    Category:
+                    {% if request_item.category %}
+                        {{ request_item.category.name }}
+                    {% else %}
+                        No category
+                    {% endif %}
+                </p>
+                <p>
+                    Format:
+                    {% if request_item.format %}
+                        {{ request_item.format.name }}
+                    {% else %}
+                        No format
+                    {% endif %}
+                </p>
+                <span class="status">{{ request_item.status }}</span>
+            </div>
+        {% empty %}
+            <p>No download requests in database yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
