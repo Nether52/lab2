@@ -1,0 +1,100 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<section class="container section">
+    <a href="{% url 'home' %}" class="back-link">← Back to home</a>
+
+    {% if request_item.category %}
+        <a href="{% url 'category_detail' request_item.category.id %}" class="back-link second-link">
+            ← Back to {{ request_item.category.name }}
+        </a>
+    {% endif %}
+
+    <div class="product-detail">
+        <div class="product-detail-image">
+            {% if request_item.image_url %}
+                <img src="{{ request_item.image_url }}" alt="{{ request_item.title }}">
+            {% else %}
+                <div class="product-image-placeholder large">No image</div>
+            {% endif %}
+        </div>
+
+        <div class="product-detail-info">
+            <p class="hero-label">Download item</p>
+
+            <h1>{{ request_item.title }}</h1>
+
+            <p>
+                <strong>Category:</strong>
+                {% if request_item.category %}
+                    {{ request_item.category.name }}
+                {% else %}
+                    No category
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Format:</strong>
+                {% if request_item.format %}
+                    {{ request_item.format.name }} — {{ request_item.format.quality }}
+                {% else %}
+                    No format
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                {{ request_item.status }}
+            </p>
+
+            <p>
+                <strong>Price:</strong>
+                {% if request_item.price > 0 %}
+                    ${{ request_item.price }}
+                {% else %}
+                    Free
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>YouTube link:</strong>
+                <a href="{{ request_item.youtube_url }}" target="_blank" class="video-link">
+                    Open original video
+                </a>
+            </p>
+
+            <div class="purchase-box">
+                <h2>Buy / Download access</h2>
+
+                {% if purchase_success %}
+                    <div class="success-message">
+                        Purchase created successfully. You can check it in the admin panel.
+                    </div>
+                {% endif %}
+
+                <form method="post" class="site-form">
+                    {% csrf_token %}
+
+                    {{ purchase_form.customer_name }}
+                    {{ purchase_form.customer_email }}
+
+                    {% if purchase_form.errors %}
+                        <div class="form-errors">
+                            {{ purchase_form.errors }}
+                        </div>
+                    {% endif %}
+
+                    <button type="submit">Buy / Download access</button>
+                </form>
+
+                <p class="button-note">
+                    For this lab, the button creates a purchase record in the database.
+                    Real payment can be added later.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

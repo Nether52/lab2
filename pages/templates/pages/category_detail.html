@@ -10,18 +10,36 @@
         <p>{{ category.description }}</p>
     </div>
 
-    <div class="requests-list">
+    <div class="product-grid">
         {% for request_item in download_requests %}
-            <div class="request-card">
-                <h3>{{ request_item.title }}</h3>
-                <p>Format: {{ request_item.format.name }}</p>
-                <p>Status: {{ request_item.status }}</p>
-                <a href="{{ request_item.youtube_url }}" target="_blank" class="video-link">
-                    Open YouTube link
+            <div class="product-card">
+                <a href="{% url 'download_request_detail' request_item.id %}">
+                    {% if request_item.image_url %}
+                        <img src="{{ request_item.image_url }}" alt="{{ request_item.title }}" class="product-image">
+                    {% else %}
+                        <div class="product-image-placeholder">No image</div>
+                    {% endif %}
+
+                    <div class="product-content">
+                        <h3>{{ request_item.title }}</h3>
+
+                        <p>
+                            Format:
+                            {% if request_item.format %}
+                                {{ request_item.format.name }}
+                            {% else %}
+                                No format
+                            {% endif %}
+                        </p>
+
+                        <p>Status: {{ request_item.status }}</p>
+
+                        <span class="details-link">View details</span>
+                    </div>
                 </a>
             </div>
         {% empty %}
-            <p>There are no download requests in this category yet.</p>
+            <p>There are no videos in this category yet.</p>
         {% endfor %}
     </div>
 </section>

@@ -5,13 +5,30 @@
 <section class="hero-section">
     <div class="container hero-content">
         <div>
-            <p class="hero-label">Django video tool</p>
+            <p class="hero-label">YouTube downloader</p>
             <h1>{{ hero_title }}</h1>
             <p>{{ hero_text }}</p>
+        </div>
 
-            <form class="download-form">
-                <input type="url" placeholder="Paste YouTube link here">
-                <button type="button">Prepare download</button>
+        <div class="hero-form-card">
+            <h2>Create download request</h2>
+
+            <form method="post" class="site-form">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="download">
+
+                {{ download_form.title }}
+                {{ download_form.youtube_url }}
+                {{ download_form.category }}
+                {{ download_form.format }}
+
+                {% if download_form.errors %}
+                    <div class="form-errors">
+                        {{ download_form.errors }}
+                    </div>
+                {% endif %}
+
+                <button type="submit">Create request</button>
             </form>
         </div>
     </div>
@@ -35,62 +52,87 @@
     </div>
 </section>
 
-<section class="container section section-dark">
-    <div class="section-heading">
-        <h2>Available formats</h2>
-        <p>Formats are also loaded from the database.</p>
-    </div>
-
-    <div class="formats-grid">
-        {% for format in formats %}
-            <div class="format-card">
-                <h3>{{ format.name }}</h3>
-                <p>Extension: {{ format.extension }}</p>
-                <p>Quality: {{ format.quality }}</p>
-
-                {% if format.only_audio %}
-                    <span class="badge">Audio only</span>
-                {% else %}
-                    <span class="badge">Video</span>
-                {% endif %}
-            </div>
-        {% empty %}
-            <p>No formats in database yet.</p>
-        {% endfor %}
-    </div>
-</section>
-
 <section class="container section">
     <div class="section-heading">
         <h2>Recent download requests</h2>
         <p>These items come from the DownloadRequest table.</p>
     </div>
 
-    <div class="requests-list">
+    <div class="product-grid">
         {% for request_item in download_requests %}
-            <div class="request-card">
-                <h3>{{ request_item.title }}</h3>
-                <p>
-                    Category:
-                    {% if request_item.category %}
-                        {{ request_item.category.name }}
+            <div class="product-card">
+                <a href="{% url 'download_request_detail' request_item.id %}">
+                    {% if request_item.image_url %}
+                        <img src="{{ request_item.image_url }}" alt="{{ request_item.title }}" class="product-image">
                     {% else %}
-                        No category
+                        <div class="product-image-placeholder">No image</div>
                     {% endif %}
-                </p>
-                <p>
-                    Format:
-                    {% if request_item.format %}
-                        {{ request_item.format.name }}
-                    {% else %}
-                        No format
-                    {% endif %}
-                </p>
-                <span class="status">{{ request_item.status }}</span>
+
+                    <div class="product-content">
+                        <h3>{{ request_item.title }}</h3>
+
+                        <p>
+                            Category:
+                            {% if request_item.category %}
+                                {{ request_item.category.name }}
+                            {% else %}
+                                No category
+                            {% endif %}
+                        </p>
+
+                        <p>
+                            Format:
+                            {% if request_item.format %}
+                                {{ request_item.format.name }}
+                            {% else %}
+                                No format
+                            {% endif %}
+                        </p>
+
+                        <span class="details-link">View details</span>
+                    </div>
+                </a>
             </div>
         {% empty %}
             <p>No download requests in database yet.</p>
         {% endfor %}
+    </div>
+</section>
+
+<section class="subscription-section">
+    <div class="container subscription-layout">
+        <div>
+            <p class="hero-label">Subscription</p>
+            <h2>Subscribe for updates</h2>
+            <p>
+                Leave your email to receive updates about new downloader features,
+                available formats and saved download requests.
+            </p>
+        </div>
+
+        <div class="subscription-card">
+            {% if subscribed_success %}
+                <div class="success-message">
+                    Subscription created successfully.
+                </div>
+            {% endif %}
+
+            <form method="post" class="site-form">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="subscribe">
+
+                {{ subscriber_form.name }}
+                {{ subscriber_form.email }}
+
+                {% if subscriber_form.errors %}
+                    <div class="form-errors">
+                        {{ subscriber_form.errors }}
+                    </div>
+                {% endif %}
+
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
     </div>
 </section>
 

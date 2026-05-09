@@ -41,23 +41,29 @@ class DownloadRequest(models.Model):
 
     title = models.CharField(max_length=200)
     youtube_url = models.URLField()
+    image_url = models.URLField(blank=True, default="")
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+
     category = models.ForeignKey(
         VideoCategory,
         on_delete=models.SET_NULL,
         null=True,
         related_name="download_requests"
     )
+
     format = models.ForeignKey(
         VideoFormat,
         on_delete=models.SET_NULL,
         null=True,
         related_name="download_requests"
     )
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default="new"
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -67,3 +73,49 @@ class DownloadRequest(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Subscriber(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Subscriber"
+        verbose_name_plural = "Subscribers"
+
+    def __str__(self):
+        return self.email
+
+
+class Purchase(models.Model):
+    STATUS_CHOICES = [
+        ("created", "Created"),
+        ("paid", "Paid"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    download_request = models.ForeignKey(
+        DownloadRequest,
+        on_delete=models.CASCADE,
+        related_name="purchases"
+    )
+
+    customer_name = models.CharField(max_length=100)
+    customer_email = models.EmailField()
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="created"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Purchase"
+        verbose_name_plural = "Purchases"
+
+    def __str__(self):
+        return f"{self.customer_name} - {self.download_request.title}"
