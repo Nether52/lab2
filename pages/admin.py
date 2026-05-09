@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import VideoCategory, VideoFormat, DownloadRequest, Subscriber, Purchase
+from .models import (
+    VideoCategory,
+    VideoFormat,
+    DownloadRequest,
+    Subscriber,
+    Purchase,
+    VideoRating,
+)
 
 
 @admin.register(VideoCategory)
@@ -35,3 +42,10 @@ class PurchaseAdmin(admin.ModelAdmin):
     list_display = ("customer_name", "customer_email", "download_request", "status", "created_at", "updated_at")
     search_fields = ("customer_name", "customer_email", "download_request__title")
     list_filter = ("status", "created_at")
+
+
+@admin.register(VideoRating)
+class VideoRatingAdmin(admin.ModelAdmin):
+    list_display = ("download_request", "name", "score", "created_at", "updated_at")
+    search_fields = ("download_request__title", "name", "comment")
+    list_filter = ("score", "created_at")

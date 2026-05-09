@@ -1,0 +1,81 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<section class="container section">
+    <a href="{% url 'home' %}" class="back-link">← Back to home</a>
+
+    <div class="section-heading">
+        <h1>Download cart</h1>
+        <p>Here are videos that you added to your download cart.</p>
+    </div>
+
+    {% if cart_items %}
+        <div class="product-grid">
+            {% for item in cart_items %}
+                <div class="product-card">
+                    <a href="{% url 'download_request_detail' item.id %}">
+                        {% if item.image_url %}
+                            <img src="{{ item.image_url }}" alt="{{ item.title }}" class="product-image">
+                        {% else %}
+                            <div class="product-image-placeholder">No image</div>
+                        {% endif %}
+
+                        <div class="product-content">
+                            <h3>{{ item.title }}</h3>
+
+                            <p>
+                                Category:
+                                {% if item.category %}
+                                    {{ item.category.name }}
+                                {% else %}
+                                    No category
+                                {% endif %}
+                            </p>
+
+                            <p>
+                                Format:
+                                {% if item.format %}
+                                    {{ item.format.name }}
+                                {% else %}
+                                    No format
+                                {% endif %}
+                            </p>
+
+                            <p>
+                                Price:
+                                {% if item.price > 0 %}
+                                    ${{ item.price }}
+                                {% else %}
+                                    Free
+                                {% endif %}
+                            </p>
+                        </div>
+                    </a>
+
+                    <form action="{% url 'remove_from_cart' item.id %}" method="post" class="remove-form">
+                        {% csrf_token %}
+                        <button type="submit">Remove from cart</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart-total-box">
+            <h2>Total: ${{ total_price }}</h2>
+
+            <form action="{% url 'clear_cart' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="clear-cart-button">Clear cart</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <h2>Your cart is empty</h2>
+            <p>Open any video page and add it to your download cart.</p>
+            <a href="{% url 'home' %}" class="red-button">Go to homepage</a>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

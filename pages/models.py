@@ -119,3 +119,33 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f"{self.customer_name} - {self.download_request.title}"
+
+
+class VideoRating(models.Model):
+    SCORE_CHOICES = [
+        (1, "1 - Very bad"),
+        (2, "2 - Bad"),
+        (3, "3 - Normal"),
+        (4, "4 - Good"),
+        (5, "5 - Excellent"),
+    ]
+
+    download_request = models.ForeignKey(
+        DownloadRequest,
+        on_delete=models.CASCADE,
+        related_name="ratings"
+    )
+
+    name = models.CharField(max_length=100)
+    score = models.IntegerField(choices=SCORE_CHOICES)
+    comment = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Video rating"
+        verbose_name_plural = "Video ratings"
+
+    def __str__(self):
+        return f"{self.download_request.title} - {self.score}"

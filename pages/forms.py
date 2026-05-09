@@ -1,5 +1,5 @@
 from django import forms
-from .models import DownloadRequest, Subscriber, Purchase
+from .models import DownloadRequest, Subscriber, Purchase, VideoRating
 
 
 class DownloadRequestForm(forms.ModelForm):
@@ -10,7 +10,7 @@ class DownloadRequestForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(attrs={
                 "class": "form-control",
-                "placeholder": "Video title, for example: F1 Highlights"
+                "placeholder": "Video title"
             }),
             "youtube_url": forms.URLInput(attrs={
                 "class": "form-control",
@@ -55,5 +55,26 @@ class PurchaseForm(forms.ModelForm):
             "customer_email": forms.EmailInput(attrs={
                 "class": "form-control",
                 "placeholder": "Your email"
+            }),
+        }
+
+
+class VideoRatingForm(forms.ModelForm):
+    class Meta:
+        model = VideoRating
+        fields = ("name", "score", "comment")
+
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Your name"
+            }),
+            "score": forms.Select(attrs={
+                "class": "form-control"
+            }),
+            "comment": forms.Textarea(attrs={
+                "class": "form-control textarea",
+                "placeholder": "Write your comment",
+                "rows": 4
             }),
         }
