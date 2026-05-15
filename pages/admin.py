@@ -18,14 +18,33 @@ class VideoCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(VideoFormat)
 class VideoFormatAdmin(admin.ModelAdmin):
-    list_display = ("name", "extension", "quality", "only_audio", "created_at", "updated_at")
-    search_fields = ("name", "extension", "quality")
-    list_filter = ("extension", "only_audio", "created_at")
+    list_display = (
+        "name",
+        "display_name",
+        "extension",
+        "quality",
+        "only_audio",
+        "needs_ffmpeg",
+        "ytdlp_format",
+        "created_at",
+        "updated_at",
+    )
+    search_fields = ("name", "display_name", "extension", "quality")
+    list_filter = ("extension", "only_audio", "needs_ffmpeg", "created_at")
 
 
 @admin.register(DownloadRequest)
 class DownloadRequestAdmin(admin.ModelAdmin):
-    list_display = ("title", "category", "format", "price", "status", "created_at", "updated_at")
+    list_display = (
+        "title",
+        "category",
+        "format",
+        "status",
+        "downloaded_file",
+        "downloaded_at",
+        "created_at",
+        "updated_at",
+    )
     search_fields = ("title", "youtube_url")
     list_filter = ("category", "format", "status", "created_at")
 

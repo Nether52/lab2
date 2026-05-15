@@ -17,9 +17,12 @@ class VideoCategory(models.Model):
 
 class VideoFormat(models.Model):
     name = models.CharField(max_length=100)
+    display_name = models.CharField(max_length=100, blank=True, default="")
     extension = models.CharField(max_length=10)
     quality = models.CharField(max_length=50)
     only_audio = models.BooleanField(default=False)
+    ytdlp_format = models.CharField(max_length=255, blank=True, default="")
+    needs_ffmpeg = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -28,6 +31,8 @@ class VideoFormat(models.Model):
         verbose_name_plural = "Video formats"
 
     def __str__(self):
+        if self.display_name:
+            return self.display_name
         return f"{self.name} ({self.quality})"
 
 
@@ -63,6 +68,13 @@ class DownloadRequest(models.Model):
         choices=STATUS_CHOICES,
         default="new"
     )
+    downloaded_file = models.FileField(
+        upload_to="downloads/",
+        blank=True,
+        null=True
+    )
+    error_message = models.TextField(blank=True, default="")
+    downloaded_at = models.DateTimeField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

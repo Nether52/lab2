@@ -75,6 +75,44 @@
                 </a>
             </p>
 
+            <div class="download-status-card status-{{ request_item.status }}">
+                <h2>Download status</h2>
+
+                {% if request_item.status == "new" %}
+                    <p>This request is ready. Start preparation to create the file.</p>
+
+                    <form method="post" class="download-action-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="prepare_download">
+                        <button type="submit" class="prepare-download-button">Prepare download</button>
+                    </form>
+                {% elif request_item.status == "processing" %}
+                    <p>File is processing. Please wait for the page to finish loading.</p>
+                {% elif request_item.status == "completed" and request_item.downloaded_file %}
+                    <p>Your file is ready.</p>
+
+                    <a href="{% url 'download_file' request_item.id %}" class="download-file-button">
+                        Download file
+                    </a>
+                {% elif request_item.status == "failed" %}
+                    <p>The download failed.</p>
+
+                    {% if request_item.error_message %}
+                        <div class="status-error-message">
+                            {{ request_item.error_message }}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" class="download-action-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="prepare_download">
+                        <button type="submit" class="prepare-download-button">Try again</button>
+                    </form>
+                {% else %}
+                    <p>The file is not ready yet.</p>
+                {% endif %}
+            </div>
+
             <form action="{% url 'add_to_cart' request_item.id %}" method="post" class="cart-form">
                 {% csrf_token %}
                 <button type="submit" class="buy-button">Add to download cart</button>

@@ -3,11 +3,33 @@
 {% block content %}
 
 <section class="container section">
-    <a href="{% url 'home' %}" class="back-link">← Back to home</a>
+    <a href="{% url 'home' %}" class="back-link">&larr; Back to home</a>
 
     <div class="simple-page">
         <h1>{{ title }}</h1>
         <p>{{ text }}</p>
+
+        {% if details %}
+            <div class="simple-page-details">
+                {% for detail in details %}
+                    <div class="simple-info-card">
+                        <h2>{{ detail.title }}</h2>
+                        <p>{{ detail.text }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if contacts %}
+            <div class="contact-grid">
+                {% for contact in contacts %}
+                    <div class="contact-card">
+                        <h2>{{ contact.label }}</h2>
+                        <p>{{ contact.value }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 </section>
 

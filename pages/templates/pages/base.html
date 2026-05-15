@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ page_title }}</title>
-    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}?v=4">
 </head>
 <body>
 
@@ -69,8 +69,10 @@
         </div>
     </div>
 
-    <p class="footer-copy">© 2026 YT Downloader. Educational Django project.</p>
+    <p class="footer-copy">&copy; 2026 YT Downloader. Educational Django project.</p>
 </footer>
+
+<script src="{% static 'pages/js/search.js' %}?v=1" defer></script>
 
 </body>
 </html>

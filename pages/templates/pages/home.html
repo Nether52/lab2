@@ -10,17 +10,41 @@
             <p>{{ hero_text }}</p>
         </div>
 
-        <div class="hero-form-card">
-            <h2>Create download request</h2>
+        <div class="hero-form-card converter-card">
+            <h2>Convert video</h2>
 
-            <form method="post" class="site-form">
+            <form method="post" class="site-form converter-form">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="download">
 
-                {{ download_form.title }}
-                {{ download_form.youtube_url }}
-                {{ download_form.category }}
-                {{ download_form.format }}
+                <div class="form-field">
+                    <label for="{{ download_form.title.id_for_label }}">Request title</label>
+                    {{ download_form.title }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ download_form.youtube_url.id_for_label }}">Video URL</label>
+                    {{ download_form.youtube_url }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ download_form.format.id_for_label }}">Format</label>
+                    {{ download_form.format }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ download_form.category.id_for_label }}">Category</label>
+                    {{ download_form.category }}
+                </div>
+
+                <div class="rights-checkbox">
+                    {{ download_form.rights_confirmed }}
+                    {{ download_form.rights_confirmed.label_tag }}
+                </div>
+
+                <p class="rights-warning">
+                    Download only content you own or have permission to save.
+                </p>
 
                 {% if download_form.errors %}
                     <div class="form-errors">
@@ -28,9 +52,105 @@
                     </div>
                 {% endif %}
 
-                <button type="submit">Create request</button>
+                <button type="submit">Convert</button>
             </form>
         </div>
+    </div>
+</section>
+
+<section class="container section">
+    <div class="section-heading">
+        <h2>Search YouTube videos</h2>
+        <p>Find a public YouTube video by title, then add it as a download request.</p>
+    </div>
+
+    <div class="youtube-search-card">
+        <form method="post" class="site-form youtube-search-form" data-youtube-search-form data-search-url="{% url 'youtube_search' %}">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="search">
+
+            {{ search_form.query }}
+
+            {% if search_form.errors %}
+                <div class="form-errors">
+                    {{ search_form.errors }}
+                </div>
+            {% endif %}
+
+            <button type="submit">Search video</button>
+        </form>
+
+        <div class="form-errors search-error{% if not search_error %} hidden{% endif %}" data-search-error>
+            {{ search_error }}
+        </div>
+    </div>
+
+    <div class="search-loading hidden" data-search-loading>
+        Searching YouTube...
+    </div>
+
+    <div class="search-results-grid" data-search-results>
+        {% if search_results %}
+            {% for video in search_results %}
+                <div class="search-result-card">
+                    {% if video.thumbnail %}
+                        <a href="{{ video.youtube_url }}" target="_blank" class="search-thumb-link">
+                            <img src="{{ video.thumbnail }}" alt="{{ video.title }}" class="search-result-image">
+                        </a>
+                    {% else %}
+                        <div class="product-image-placeholder">No image</div>
+                    {% endif %}
+
+                    <div class="search-result-content">
+                        <h3>{{ video.title }}</h3>
+
+                        <div class="search-result-meta">
+                            {% if video.channel %}
+                                <span>{{ video.channel }}</span>
+                            {% endif %}
+
+                            {% if video.duration %}
+                                <span>{{ video.duration }}</span>
+                            {% endif %}
+                        </div>
+
+                        <a href="{{ video.youtube_url }}" target="_blank" class="video-link">
+                            Open on YouTube
+                        </a>
+
+                        <form method="post" class="site-form search-add-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="download">
+                            <input type="hidden" name="title" value="{{ video.title }}">
+                            <input type="hidden" name="youtube_url" value="{{ video.youtube_url }}">
+
+                            <select name="format" class="form-control format-select" required>
+                                <option value="">Choose format</option>
+                                {% for video_format in formats %}
+                                    <option value="{{ video_format.id }}">{{ video_format }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <select name="category" class="form-control">
+                                <option value="">Choose category</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="rights-checkbox compact-rights">
+                                <input type="checkbox" name="rights_confirmed" id="rights_search_{{ forloop.counter }}" class="rights-input" required>
+                                <label for="rights_search_{{ forloop.counter }}">
+                                    I confirm that I have the right to download this video
+                                </label>
+                            </div>
+
+                            <button type="submit">Add and convert</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 </section>
 
